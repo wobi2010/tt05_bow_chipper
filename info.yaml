@@ -27,46 +27,48 @@ documentation:
   description:  "Generates a PRBS that is configureable up to 16-bits."         # Short description of what your project does
 
 # Longer description of how the project works. You can use standard markdown format.
-  how_it_works: | "Pseudo Random Binary Sequence (PRBS) generator.
-- Features
-  - Implements a Galois LSFR with XOR taps for PRN generation.
-  - Has a fail safe all 0's check to ensure the generator does not get locked up.
-  - Clock Divider
-  - SPI Interface
-    - CLK, MOSI, CS
-    - SPI Mode 0, CS Active Low, MSB First
-  - Register access for configuration
-  - Differential Output
-  - Look-ahead Outputs
-    - For each of the differential outputs, the next bit coming is output.
-    - Useful for waveshaping or other information.
-  - Logic added in so a bit cannot be XOR'ed if the previous bit is disabled.
-    - The highest order bit is not XOR'ed with the output bit, despite being in teh poly.
+  how_it_works: |
+    Pseudo Random Binary Sequence (PRBS) generator.
 
-- Registers
-  - 4 registers control the PRBS generator
-    - Register 0 - Command and Address of register to configure
-    - Register 1 - Clock Divider
-    - Register 2 - Bits to enable
-    - Register 3 - Polynomial XOR taps to enable
-  - Addressing and commands happen in a single CS session.
-  - CS low -> command + 2-bit address -> 8- or 16-bit data -> CS high
-  - Reset_N clears registers
+    Features
+        Implements a Galois LSFR with XOR taps for PRN generation.
+        Has a fail safe all 0's check to ensure the generator does not get locked up.
+        Clock Divider
+        SPI Interface
+            CLK, MOSI, CS
+        SPI Mode 0, CS Active Low, MSB First
+        Register access for configuration
+        Differential Output
+        Look-ahead Outputs
+            For each of the differential outputs, the next bit coming is output.
+            Useful for waveshaping or other information.
+        Logic added in so a bit cannot be XOR'ed if the previous bit is disabled.
+            The highest order bit is not XOR'ed with the output bit, despite being in teh poly.
 
-- Interface
-  - Inputs
-    - SPI Chip Select
-    - SPI Clock
-    - SPI Data (MOSI)
+    Registers
+        4 registers control the PRBS generator
+            Register 0 - Command and Address of register to configure
+            Register 1 - Clock Divider
+            Register 2 - Bits to enable
+            Register 3 - Polynomial XOR taps to enable
+        Addressing and commands happen in a single CS session.
+        CS low -> command + 2-bit address -> 8- or 16-bit data -> CS high
+        Reset_N clears registers
 
-  - Outputs
-    - PRBS OUT
-    - PRBS OUT +1 CLK
-    - PRBS OUT (Inverse) +1 CLK
-    - PRBS OUT (Inverse)
+    Interface
+        Inputs
+            SPI Chip Select
+            SPI Clock
+            SPI Data (MOSI)
 
-  - Bidirectional
-    - none
+        Outputs
+            PRBS OUT
+            PRBS OUT +1 CLK
+            PRBS OUT (Inverse) +1 CLK
+            PRBS OUT (Inverse)
+
+        Bidirectional
+            none
 
 Commands and Registers
 ```
@@ -111,7 +113,6 @@ Commands and Registers
         - x^5 + x^4 + x^3 + 1 is b'111000.
       - Bits must be sequenctial from bit 0. Other values are undefined.
 ```
-"
 
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test: |
