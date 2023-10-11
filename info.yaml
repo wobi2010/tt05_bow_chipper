@@ -27,8 +27,7 @@ documentation:
   description:  "Generates a PRBS that is configureable up to 16-bits."         # Short description of what your project does
 
 # Longer description of how the project works. You can use standard markdown format.
-  how_it_works: |
-Pseudo Random Binary Sequence (PRBS) generator.
+  how_it_works: | "Pseudo Random Binary Sequence (PRBS) generator.
 - Features
   - Implements a Galois LSFR with XOR taps for PRN generation.
   - Has a fail safe all 0's check to ensure the generator does not get locked up.
@@ -112,6 +111,7 @@ Commands and Registers
         - x^5 + x^4 + x^3 + 1 is b'111000.
       - Bits must be sequenctial from bit 0. Other values are undefined.
 ```
+"
 
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test: |
