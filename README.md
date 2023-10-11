@@ -1,18 +1,86 @@
-This design has the following features:
-- Clock Divider (/1, /2, /4, /8, /16, /32, /64)
-- 4 Registers which control the PRN.
-  - Address 0: Address of register to configure
-  - Address 1: Clock Divider (bits 0-2, rest don't care)
-  - Address 2: Bits to enable
-    - This allows for any number of bits, from PRN 2 up to PRN 16.
-  - Address 3: Polynomial
-    - The value in this register is the polynomial for the PRN.
-- SPI Interface
-  - CLK, MOSI, CS
-  - First chip select down gives the address of the next register write.
-  - Second chip select down gives the data for the register.
-  - Address storage resets after second chip select up.
-    - There is no safety mechanism for if the SPI gets out of sync...
-- Reset_N
-- PRN sequence generator.
-- Has a fail safe all 0's check to ensure the PRN generator does not get locked up.
+Author: Ivan M. Bow
+
+# Pseudo Random Binary Sequence (PRBS) generator.
+## Features:
+  - Implements a Galois LSFR with XOR taps for PRN generation.
+  - Has a fail safe all 0's check to ensure the generator does not get locked up.
+  - Clock Divider
+  - SPI Interface
+    - CLK, MOSI, CS
+    - SPI Mode 0, CS Active Low, MSB First
+  - Register access for configuration
+  - Differential Output
+  - Look-ahead Outputs
+    - For each of the differential outputs, the next bit coming is output.
+    - Useful for waveshaping or other information.
+  - Logic added in so a bit cannot be XOR'ed if the previous bit is disabled.
+    - The highest order bit is not XOR'ed with the output bit, despite being in teh poly.
+
+## Registers
+  - 4 registers control the PRBS generator
+    - Register 0: Command and Address of register to configure
+    - Register 1: Clock Divider
+    - Register 2: Bits to enable
+    - Register 3: Polynomial XOR taps to enable
+  - Addressing and commands happen in a single CS session.
+  - CS low -> command + 2-bit address -> 8- or 16-bit data -> CS high
+  - Reset_N clears registers
+
+## Interface
+### Inputs:
+    - SPI Chip Select
+    - SPI Clock
+    - SPI Data (MOSI)
+
+### Outputs:
+    - PRBS OUT
+    - PRBS OUT +1 CLK
+    - PRBS OUT (Inverse) +1 CLK
+    - PRBS OUT (Inverse)
+
+### Bidirectional:
+    - none
+
+## Commands and Registers
+### Commands
+  - 1: Write to Register
+  - Currently there is only one command. Not sure what else to command...
+
+### Register 0: Command & Address
+  - |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+  - | C0  |  X  |  X  |  X  |  X  |  X  | A1  | A0  |
+    - bits [7]   - 0: Nothing occurs.
+                   1: Writes the following word into the register
+    - bits [6:2] - Do Not Care
+    - bits [1:0] - 2-bit address of register to place the following data in.
+      - (Address 0 is this register.)
+
+### Register 1: Clock Divider
+  - |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+  - |  X  |  X  |  X  |  X  |  X  | D2  | D1  | D0  |
+    - bits [7:3] - Do Not Care
+    - bits [2:0] - Clock Divider
+      - 0: /1
+      - 1: /2
+      - 2: /4
+      - 3: /8
+      - 4: /16
+      - 5: /32
+      - 6: /64
+      - 7: /128
+
+### Register 2: Polynomial Enable Bits
+  - | 15  | 14  | 13  | 12  | 11  | 10  |  9  |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+  - | E15 | E14 | E13 | E12 | E11 | E10 | E9  | E8  | E7  | E6  | E5  | E4  | E3  | E2  | E1  | E0  |
+    - bits [15:0] - E(n) is the enable bit for the polynomial size.
+      - For example, a 3-bit ploynomial will be h'0007, 12-bit h'1FFF.
+      - Bits must be sequenctial from bit 0. Other values are undefined.
+
+### Register 3: Polynomial Tap Bits
+  - | 15  | 14  | 13  | 12  | 11  | 10  |  9  |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+  - | E15 | E14 | E13 | E12 | E11 | E10 | E9  | E8  | E7  | E6  | E5  | E4  | E3  | E2  | E1  | E0  |
+    - bits [15:0] - E(n) is the enable bit for the polynomial taps.
+      - ** Ignore the highest order polynomial factor **
+        - x^4 + x^2 + 1 is b'00000010.
+        - x^5 + x^4 + x^3 + 1 is b'00011000.
+      - Bits must be sequenctial from bit 0. Other values are undefined.
