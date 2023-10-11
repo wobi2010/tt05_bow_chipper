@@ -21,14 +21,15 @@ yaml_version: 2
 #
 # Here is a great example: https://github.com/davidsiaw/tt02-davidsiaw-stackcalc/blob/38c5647f83aad2aec675d566aa3d67b98f0aac81/info.yaml
 documentation:
-  author:       "Ivan M Bow"      # Your name
-  title:        "PRBS Generator"      # Project title
-  language:     "Wokwi" # other examples include Verilog, Amaranth, VHDL, etc
-  description:  "Generates a PRBS that is configureable up to 16-bits."      # Short description of what your project does
+  author:       "Ivan M Bow"                                                    # Your name
+  title:        "PRBS Generator"                                                # Project title
+  language:     "Wokwi"                                                         # other examples include Verilog, Amaranth, VHDL, etc
+  description:  "Generates a PRBS that is configureable up to 16-bits."         # Short description of what your project does
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
-# Pseudo Random Binary Sequence (PRBS) generator.
+"
+Pseudo Random Binary Sequence (PRBS) generator.
 Features:
   - Implements a Galois LSFR with XOR taps for PRN generation.
   - Has a fail safe all 0's check to ensure the generator does not get locked up.
@@ -111,14 +112,16 @@ Commands and Registers
         - x^4 + x^2 + 1 is b'00000010.
         - x^5 + x^4 + x^3 + 1 is b'00011000.
       - Bits must be sequenctial from bit 0. Other values are undefined.
-
+"
 
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test:  |
+"
     1) Reset to ensure known states.
     2) Configure the registers using SPI.
     3) Connect Input Clock (If not already done).
     4) Observe Output.
+"
 
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:
@@ -152,9 +155,9 @@ Commands and Registers
     - none
 
 # The following fields are optional
-  tag:          "prn, prbs, spi, clock divider, registers, "      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
-  external_hw:  "Connection to SPI port, clock input, and analyzer to observe output."      # Describe any external hardware needed
-  discord:      "wulfhednar"      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
-  doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     "The input clock (along with the divider) drives the binary output frequency."       # Clock frequency in Hz (if required)
-  picture:      ""      # relative path to a picture in your repository (must be 512kb or less)
+  tag:          "prn, prbs, spi, clock divider, registers, "                    # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
+  external_hw:  "Connection to SPI port, clock input, and analyzer to observe." # Describe any external hardware needed
+  discord:      "wulfhednar"                                                    # Your discord handle, used for communication and automatically assigning tapeout role after a submission
+  doc_link:     ""                                                              # URL to longer form documentation, eg the README.md in your repository
+  clock_hz:     "The input drives the output frequency."                        # Clock frequency in Hz (if required)
+  picture:      ""                                                              # relative path to a picture in your repository (must be 512kb or less)
