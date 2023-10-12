@@ -28,7 +28,7 @@ documentation:
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
-Pseudo Random Binary Sequence (PRBS) generator
+    Pseudo Random Binary Sequence (PRBS) generator
 - Features
   - Implements a Galois LSFR with XOR taps for PRN generation.
   - Has a fail safe all 0's check to ensure the generator does not get locked up.
