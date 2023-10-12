@@ -56,43 +56,52 @@ Author: Ivan M Bow
 - Currently there is only one command. Not sure what else to command...
 
 ### Register 0: Command & Address
-- : 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
-- : C0 : X  : X  : X  : X  : X  : A1 : A0 :
-  - bits [7]   - 0: Nothing occurs.
-                 1: Writes the following word into the register
-  - bits [6:2] - Do Not Care
-  - bits [1:0] - 2-bit address of register to place the following data in.
-    - (Address 0 is this register.)
+```
+: 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
+: C0 : X  : X  : X  : X  : X  : A1 : A0 :
+```
+- bits [7]   - 0: Nothing occurs.
+               1: Writes the following word into the register
+- bits [6:2] - Do Not Care
+- bits [1:0] - 2-bit address of register to place the following data in.
+  - (Address 0 is this register.)
 
 ### Register 1: Clock Divider
-- : 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
-- : X  : X  : X  : X  : X  : D2 : D1 : D0 :
-  - bits [7:3] - Do Not Care
-  - bits [2:0] - Clock Divider
-    - 0: /1
-    - 1: /2
-    - 2: /4
-    - 3: /8
-    - 4: /16
-    - 5: /32
-    - 6: /64
-    - 7: /128
+```
+: 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
+: X  : X  : X  : X  : X  : D2 : D1 : D0 :
+```
+- bits [7:3] - Do Not Care
+- bits [2:0] - Clock Divider
+  - 0: /1
+  - 1: /2
+  - 2: /4
+  - 3: /8
+  - 4: /16
+  - 5: /32
+  - 6: /64
+  - 7: /128
 
 ### Register 2: Polynomial Enable Bits
-- : 15 : 14 : 13 : 12 : 11 : 10 : 9  : 8  : 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
-- : E16: E15: E14: E13: E12: E11: E10: E9 : E8 : E7 : E6 : E5 : E4 : E3 : E2 : E1 :
-  - bits [15:0] - E(n) is the enable bit for the polynomial size.
-    - E(n) is 1 indexed to match the polynomial exponents.
-      - 3-bit ploynomial is b'111 or h'7.
-      - 12-bitpolynomial is b'111111111111 or h'FFF.
-    - Bits must be sequenctial from bit 0. Other values are undefined.
+```
+: 15 : 14 : 13 : 12 : 11 : 10 : 9  : 8  : 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
+: E16: E15: E14: E13: E12: E11: E10: E9 : E8 : E7 : E6 : E5 : E4 : E3 : E2 : E1 :
+```
+- bits [15:0] - E(n) is the enable bit for the polynomial size.
+  - E(n) is 1 indexed to match the polynomial exponents.
+    - 3-bit ploynomial is b'111 or h'7.
+    - 12-bitpolynomial is b'111111111111 or h'FFF.
+  - Bits must be sequenctial from bit 0. Other values are undefined.
 
 ### Register 3: Polynomial Tap Bits
-- : 15 : 14 : 13 : 12 : 11 : 10 : 9  : 8  : 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
-- : E16: E15: E14: E13: E12: E11: E10: E9 : E8 : E7 : E6 : E5 : E4 : E3 : E2 : E1 :
-  - bits [15:0] - E(n) is the enable bit for the polynomial taps.
-    - E(n) is 1 indexed to match the polynomial exponents.
-      - x^4 + x^2 + 1 is b'1010 or h'A.
-      - x^5 + x^4 + x^3 + 1 is b'11100 or h'1C.
-    - Bits must be sequenctial from bit 0. Other values are undefined.
+```
+: 15 : 14 : 13 : 12 : 11 : 10 : 9  : 8  : 7  : 6  : 5  : 4  : 3  : 2  : 1  : 0  :
+: E16: E15: E14: E13: E12: E11: E10: E9 : E8 : E7 : E6 : E5 : E4 : E3 : E2 : E1 :
+```
+- bits [15:0] - E(n) is the enable bit for the polynomial taps.
+  - E(n) is 1 indexed to match the polynomial exponents.
+    - x^4 + x^2 + 1 is b'1010 or h'A.
+    - x^5 + x^4 + x^3 + 1 is b'11100 or h'1C.
+  - Bits must be sequenctial from bit 0. Other values are undefined.
+
 
