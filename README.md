@@ -3,6 +3,10 @@ Author: Ivan M Bow
 # Pseudo Random Binary Sequence (PRBS) generator.
 ## Features:
 - Implements a Galois LSFR with XOR taps for PRN generation.
+- Estimated 1.5MHz Max output PRBS rate, at PRBS2.
+  - With 16-bit polynomial, 30-50 MHz may be achievable.
+  - Max frequency reduces as PRBS size is reduced.
+    - Estimated Max = (30 MHz / 2 ^ (16 - Nbits))
 - Has a fail safe all 0's check to ensure the generator does not get locked up.
 - Clock Divider
 - SPI Interface
