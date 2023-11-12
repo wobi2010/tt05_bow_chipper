@@ -3,10 +3,10 @@
 
 This project was created using [Wokwi] and submitted to [Tiny Tapeout] for fabrication. The goal
 is to create a fully configurable, burst PRBS output. See [Wiki] for implementation details of PRBS
-and details on the operations of and plynomials for Linear-Shift-Fedback-Registers (LSFR).
+and details on the operations of and polynomials for Linear-Feedback-Shift-Registers (LFSR).
 
 ## Features ##
-- Implements a Galois LSFR with XOR taps for PRN generation.
+- Implements a Galois LFSR with XOR taps for PRN generation.
 - Estimated 500kHz Max output PRBS rate, at PRBS2.
   - With 8-bit polynomial, 30 MHz should be achievable.
   - Max frequency reduces as PRBS size is reduced.
@@ -23,7 +23,7 @@ and details on the operations of and plynomials for Linear-Shift-Fedback-Registe
   - Useful for waveshaping or other information.
 - Logic added in so a bit cannot be XOR'ed if the previous bit is disabled.
   - The highest order bit is not XOR'ed with the output bit, despite being in the poly.
-- Enable pin for starting and reseting the output.
+- Enable pin for starting and resetting the output.
 - Data pin for inverting the output.
 
 ## Description ##
@@ -50,7 +50,7 @@ then high again to start another "data bits" cycles of the PRBS.
 
 Registers are configured using SPI. For setting up each 8-bit register, the first byte sent is the
 command byte and must be hexadecimal 0x80, plus the address of the register to be configured. The
-second bytesent is the data that wlll be placed in the register and stored until changed or reset.
+second byte sent is the data that will be placed in the register and stored until changed or reset.
 The address field is the last 3-bits of the command byte and valid range is 1-5. Chip select high
 resets the command byte, and only 1 register may be written to per cycle of chip select.
 
@@ -143,9 +143,9 @@ The PRBS generator is now running, and the data line can be toggled to invert th
 | E8 | E7 | E6 | E5 | E4 | E3 | E2 | E1 |
 - bits [7:0] - E(n+1) is the enable bit for the polynomial size.
   - E() is 1 indexed to match the polynomial exponents.
-    - 3-bit ploynomial is b'111 or h'7.
-    - 8-bitpolynomial is b'11111111 or h'FF.
-  - Bits must be sequenctial from bit 0. Other values are undefined.
+    - 3-bit polynomial is b'111 or h'7.
+    - 8-bit polynomial is b'11111111 or h'FF.
+  - Bits must be sequential from bit 0. Other values are undefined.
 
 ### Register 3: Polynomial Tap Bits
 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
