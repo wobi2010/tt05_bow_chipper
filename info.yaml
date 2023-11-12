@@ -33,10 +33,10 @@ documentation:
 
     This project was created using [Wokwi] and submitted to [Tiny Tapeout] for fabrication. The goal
     is to create a fully configurable, burst PRBS output. See [Wiki] for implementation details of PRBS
-    and details on the operations of and plynomials for Linear-Shift-Fedback-Registers (LSFR).
+    and details on the operations of and polynomials for Linear-Feedback-Shift-Registers (LFSR).
 
     ## Features ##
-    - Implements a Galois LSFR with XOR taps for PRN generation.
+    - Implements a Galois LFSR with XOR taps for PRN generation.
     - Estimated 500kHz Max output PRBS rate, at PRBS2.
       - With 8-bit polynomial, 30 MHz should be achievable.
       - Max frequency reduces as PRBS size is reduced.
@@ -53,16 +53,16 @@ documentation:
       - Useful for waveshaping or other information.
     - Logic added in so a bit cannot be XOR'ed if the previous bit is disabled.
       - The highest order bit is not XOR'ed with the output bit, despite being in the poly.
-    - Enable pin for starting and reseting the output.
+    - Enable pin for starting and resetting the output.
     - Data pin for inverting the output.
-
+    
     ## Description ##
     The 8-bit PRBS generator has several 8-bit registers that are used to configure the output.
     Using the [Tiny Tapeout] board that is supplied with each project, the PRBS generator will take in a
     clock of any frequency output by the RP2040. The input clock is divided by the configured factor of 2,
     then this frequency is used to run the generator. The bit length and the polynomial of the output
     are configured in the registers. The output of the PRBS generator starts when the enable pin is set high.
-
+    
     There are 2 counters that control the output of the PRBS generator. The binary sequence will
     run for a configured number of times, with an output "clock" indicating this "rate". For Example,
     if the register is set to 20, the PRBS will be repeated 10 times, the output clock goes low, then
@@ -70,31 +70,31 @@ documentation:
     to an external device for sending data. When the output clock goes low, the data needs to be set.
     When the output clock goes high, the data on the input pin is clocked in for the remainder of the
     output clock period.
-
+    
     The data bit is XOR'ed with the PRBS output to create a non-inverted or inverted sequence. A
     register is configured to have the number of data bits that will be clocked into the PRBS
     generator. This number of data bits is the number of clock periods that are given from the output
     clock. Once the number of data bits has been completed, the PRBS generator automatically stops
     running. The generator remains off until the enable pin goes low, which resets the generator, and
     then high again to start another "data bits" cycles of the PRBS.
-
+    
     Registers are configured using SPI. For setting up each 8-bit register, the first byte sent is the
     command byte and must be hexadecimal 0x80, plus the address of the register to be configured. The
-    second bytesent is the data that wlll be placed in the register and stored until changed or reset.
+    second byte sent is the data that will be placed in the register and stored until changed or reset.
     The address field is the last 3-bits of the command byte and valid range is 1-5. Chip select high
     resets the command byte, and only 1 register may be written to per cycle of chip select.
-
+    
     A debug setup has been included for easy setup and testing. The debug mode sets the generator to
     divide the input clock by 16, the sequences per data bit to 7, the data bits count to 7, enables
     bits 0x0F (4 bits), and the polynomial to 0x0C (x^4 + x^3 + 1). To use the debug feature, start by
     placing all inputs low (including RST_N) to reset all registers and counters. Then:
-
+    
     1) Set the RST_N line high.
     2) Set DEBUG high.
     3) Set ENABLE high.
-
+    
     The PRBS generator is now running, and the data line can be toggled to invert the output.
-
+    
     ## Registers
     - 5 registers control the PRBS generator
       - Register 0: Command and Address of register to configure *
@@ -103,11 +103,11 @@ documentation:
       - Register 3: Count of data bits ***
       - Register 4: Bits to enable ****
       - Register 5: Polynomial XOR taps to enable *****
-
+    
     - Addressing and commands happen in a single CS session.
       - CS low -> 0x80 + 3-bit address -> 8-bit data -> CS high
     - Reset_N clears all registers
-
+    
     ## Inputs
     - **CLK** (RP2040 Clock)
     - **RST_N** (Reset Low)
@@ -119,7 +119,7 @@ documentation:
     - **IN5**: No Connect
     - **IN6**: No Connect
     - **IN7**: DEBUG (Debug mode - Active high)
-
+    
     ## Outputs
     - **OUT0**: PRBS_OUT_1   (PRBS Positive Look-ahead)
     - **OUT1**: PRBS_OUT     (PRBS Positive)
@@ -129,7 +129,7 @@ documentation:
     - **OUT5**: BUSY         (PRBS Running)
     - **OUT6**: CLK_OUT      (RP2040 Clock)
     - **OUT7**: CLK_PRBS_OUT (PRBS Generator Clock)
-
+    
     ## Bidirectional
     (All DIO are set to output and used for debug purposes.)
     - **D0**: REG_SEL_0
@@ -140,7 +140,7 @@ documentation:
     - **D5**: DATA_COUNT_COMB_OUT
     - **D6**: SEQ_COUNT_COMB_OUT
     - **D7**: No Connect
-
+    
     ## Register Contents
     ### Register 0: Command & Address
     | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
@@ -151,7 +151,7 @@ documentation:
     - bits [6:3] - Do Not Care
     - bits [1:2] - 3-bit address of register to place the following data in.
       - (Address 0 is this register.)
-
+    
     ### Register 1: Clock Divider
     | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
     |-|-|-|-|-|-|-|-|
@@ -166,17 +166,17 @@ documentation:
       - 5: /32
       - 6: /64
       - 7: /128
-
+    
     ### Register 2: Polynomial Enable Bits
     | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
     |-|-|-|-|-|-|-|-|
     | E8 | E7 | E6 | E5 | E4 | E3 | E2 | E1 |
     - bits [7:0] - E(n+1) is the enable bit for the polynomial size.
       - E() is 1 indexed to match the polynomial exponents.
-        - 3-bit ploynomial is b'111 or h'7.
-        - 8-bitpolynomial is b'11111111 or h'FF.
-      - Bits must be sequenctial from bit 0. Other values are undefined.
-
+        - 3-bit polynomial is b'111 or h'7.
+        - 8-bit polynomial is b'11111111 or h'FF.
+      - Bits must be sequential from bit 0. Other values are undefined.
+    
     ### Register 3: Polynomial Tap Bits
     | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
     |-|-|-|-|-|-|-|-|
@@ -185,7 +185,7 @@ documentation:
       - E() is 1 indexed to match the polynomial exponents.
         - x^4 + x^2 + 1 is b'1010 or h'A.
         - x^5 + x^4 + x^3 + 1 is b'11100 or h'1C.
-
+    
     ```
     *     Do not address the command byte register, address 0. If the command byte is written to as
             data, then the data could trigger the command byte to transfer to another register,
@@ -200,7 +200,7 @@ documentation:
             enabled but bit 6 has the XOR tap set, then the output polynomial will be x^6 + the rest
             of the polynomial settings.
     ```
-
+    
     [Wokwi]: <https://www.wokwi.com>
     [Tiny Tapeout]: <https://www.tinytapeout.com>
     [Wiki]: <https://en.wikipedia.org/wiki/Linear-feedback_shift_register>
