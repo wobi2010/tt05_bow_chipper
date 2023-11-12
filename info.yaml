@@ -24,7 +24,7 @@ documentation:
   author:       "Ivan M Bow"                                                    # Your name
   title:        "PRBS Generator"                                                # Project title
   language:     "Wokwi"                                                         # other examples include Verilog, Amaranth, VHDL, etc
-  description:  "Generates a PRBS that is configureable up to 16-bits."         # Short description of what your project does
+  description:  "Generates a PRBS that is configureable up to 8-bits."          # Short description of what your project does
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
